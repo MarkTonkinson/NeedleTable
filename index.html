@@ -18,12 +18,12 @@
 	</tr>
 	<tr ng-repeat="row in table.rows track by $index">
 		<td ng-repeat="(key, val) in table.rows[$index]">
-			<input type="text" ng-model="val.val">
+			<input type="text" ng-model="val.val" ng-blur="val.equation(row)">
 		</td>
 	</tr>
 	<tr>
-		<td ng-repeat="row in table.totalRow track by $index">
-			<input type="text" ng-model="table.totalRow[$index]">
+		<td ng-repeat="(key, val) in table.columnTotals track by $index">
+			<input type="text" ng-model="val['col' + (key+1)]" readonly>
 		</td>
 	</tr>
 
