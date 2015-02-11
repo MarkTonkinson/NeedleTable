@@ -16,10 +16,10 @@
 	<tr>
 		<th ng-repeat="colHead in table.colHeads">{{colHead}}</th>
 	</tr>
-	<tr>
-	<!-- 	<td ng-repeat="row in table.calcRow track by $index">
-			<input type="text" ng-model="table.calcRow[$index]">
-		</td> -->
+	<tr ng-repeat="row in table.rows track by $index">
+		<td ng-repeat="(key, val) in table.rows[$index]">
+			<input type="text" ng-model="val.val">
+		</td>
 	</tr>
 	<tr>
 		<td ng-repeat="row in table.totalRow track by $index">

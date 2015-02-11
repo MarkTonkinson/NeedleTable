@@ -4,6 +4,7 @@ app.controller("tableCtrl", function($scope, tableService){
 	
 	$scope.table = {
 		colHeads: tableService.getColumnHeadings(),
+		rows: [],
 		row1: [],
 		totalRow: ['0','0','0','0','0','0','0'],
 		equations: {
@@ -44,12 +45,16 @@ app.controller("tableCtrl", function($scope, tableService){
 			for(var i=0; i<this.colHeads.length; i++){
 				var ref = "col" + i;
 				var obj = {
-					ref: ref,
+					ref: i,
 					val: '0',
-					equation: 'someValueAddedDynamically based on i with reference to array'
+					equation: function(){
+						this.val = equations.multiply(val, ref);
+					}
 				}
 				this[row].push(obj)
+
 			}
+			this.rows.push(this[row])
 		},
 		sumRow: function(){
 			this.formNewRow();
