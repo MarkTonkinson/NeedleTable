@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+
+<html ng-app="NeedleTable">
+<head>
+	<title>Needle Table</title>
+	<!-- <link rel="stylesheet" href="styles.css"> -->
+</head>
+
+<body ng-controller="tableCtrl">
+
+<header>
+	<h2>Needle Table</h2>
+</header>
+
+<table>
+	<tr>
+		<th ng-repeat="colHead in colHeads">{{colHead}}</th>
+	</tr>
+	<tr>
+		<th>
+		</th>
+	</tr>
+
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.12/angular.js"></script>
+<script src="app.js"></script>
+<script src="tableCtrl.js"></script>
+<script src="tableService.js"></script>
+</body>
+</htmL>
