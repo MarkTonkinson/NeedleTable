@@ -4,12 +4,12 @@ app.controller("tableCtrl", function($scope, tableService){
 	//to do, need to check if my inputs are dirty so it doesn't just keep adding up or multplying
 	$scope.table = {
 		colHeads: tableService.getColumnHeadings(),
+		columnTotals: tableService.getColumnTotalsArray(),
 		rows: [],
-		columnTotals: [],
 		multiply: function(val, index, cb){
 			if(typeof val === "string"){
 				//parseFloat because they give decimals
-				val = parseFloat(val)
+				val = parseFloat(val).toFixed(2)
 			}
 			if(typeof index === "string"){
 				index = parseInt(index)
@@ -26,19 +26,20 @@ app.controller("tableCtrl", function($scope, tableService){
 				this.formNewRow();
 				total.addRowFlag = false;
 			}
-			console.log($scope.table.rows)
 		},
 		sumColumn: function(columnRef, oldVal, newVal){
 			
 			var i = columnRef.replace('col', '')
-			i = parseFloat(i)
 			i = i-1;
+			
 			var total = this.columnTotals[i][columnRef]
-			total = parseFloat(total);
-			total -= oldVal;
-			total += newVal;
-			this.columnTotals[i][columnRef] = total.toString();
-			console.log(columnRef, i, total)
+			total = total.replace('$','')
+			
+			total = parseFloat(total)
+			total -= parseFloat(oldVal)
+			total += parseFloat(newVal)
+			total.toFixed(2)
+			this.columnTotals[i][columnRef] = '$' + total;
 		},
 		formNewRow: function(){
 			var row = []
@@ -49,16 +50,33 @@ app.controller("tableCtrl", function($scope, tableService){
 					index: i + 1,
 					val: '0',
 					valRef: '0',
-					equation: function(row){
+					focus: function(){
+						if(this.val === '0'){
+							this.val = '';
+						}
+					},
+					blur: function(row){
 						if(this.val === ''){
-							this.val = '0'
-						} else if (this.val !== this.valRef){
-							//using "this.equations" didn't go to the parent prototype- how do I do that? also, because I'm not using a constructor this is creating this function again and again
-							//I think this would need to be a constructor to share the parent prototype? Need to research
-							this.val = $scope.table.multiply(this.val, this.index);
+							this.val ='0'
 							$scope.table.sumRow(row, this.valRef, this.val);
 							$scope.table.sumColumn(this.columnRef, this.valRef, this.val)
-							this.valRef = this.val;
+							this.valRef ='0'
+
+						}
+					},
+					equation: function(row){
+					//NaN situations and commas
+					if(parseFloat(this.val) !== parseFloat(this.val) || this.val.indexOf(',') > -1){
+						this.val=''
+					}
+					if(this.val !== this.valRef && this.val !== ''){
+							//using "this.equations" didn't go to the parent prototype- how do I do that? also, because I'm not using a constructor this is creating this function again and again
+							//I think this would need to be a constructor to share the parent prototype? Need to research
+							
+							newVal = $scope.table.multiply(this.val, this.index);
+							$scope.table.sumRow(row, this.valRef, newVal);
+							$scope.table.sumColumn(this.columnRef, this.valRef, newVal)
+							this.valRef = newVal
 						}
 					}
 				}
@@ -66,12 +84,25 @@ app.controller("tableCtrl", function($scope, tableService){
 			}
 			row.push({
 				addRowFlag: true,
-				val: '0',
+				val: '$0.00',
 				total: function(oldVal, newVal){
-					this.val = parseFloat(this.val);
+					if(this.val === '$0.00'){
+						this.val = '0'
+					} else if (this.val){
+						console.log(this.val, '1')
+						this.val = this.val.replace('$','')
+						console.log(this.val, '2')
+					}
+					this.val = parseFloat(this.val)
 					this.val -= oldVal;
 					this.val += newVal;
-					this.val = this.val.toString()
+					returnableVal = this.val;
+					this.setTotal()
+					return this.val
+
+				},
+				setTotal: function(){
+					this.val = '$' + this.val.toString()
 				}
 			})
 			this.rows.push(row)
@@ -84,14 +115,6 @@ app.controller("tableCtrl", function($scope, tableService){
 		if($scope.table.rows.length === 0){
 			$scope.table.formNewRow();
 		}
-		
-		for(var i=1; i<7; i++){
-			var obj = {};
-			var key = 'col' + i
-			obj[key] = '0'
-			$scope.table.columnTotals.push(obj)
-		}
-		console.log($scope.table.columnTotals)
 	};
 	initTable()
 	
