@@ -1,14 +1,14 @@
 var app = angular.module("NeedleTable");
 
 app.controller("tableCtrl", function($scope, tableService){
-	//to do, need to check if my inputs are dirty so it doesn't just keep adding up or multplying
+	
 	$scope.table = {
 		colHeads: tableService.getColumnHeadings(),
 		columnTotals: tableService.getColumnTotalsArray(),
 		rows: [],
 		multiply: function(val, index, cb){
 			if(typeof val === "string"){
-				//parseFloat because they give decimals
+				
 				val = parseFloat(val).toFixed(2)
 			}
 			if(typeof index === "string"){
@@ -21,7 +21,11 @@ app.controller("tableCtrl", function($scope, tableService){
 			oldVal = parseFloat(oldVal)
 			newVal = parseFloat(newVal)
 			total.total(oldVal, newVal);
-			var num = parseFloat(total.val);
+			var num = total.val;
+			if(typeof total.val === 'string'){
+				num = num.replace('$','')
+				num = parseFloat(num)
+			}
 			if(total.addRowFlag === true && num > 0){
 				this.formNewRow();
 				total.addRowFlag = false;
@@ -38,7 +42,7 @@ app.controller("tableCtrl", function($scope, tableService){
 			total = parseFloat(total)
 			total -= parseFloat(oldVal)
 			total += parseFloat(newVal)
-			total.toFixed(2)
+			total = total.toFixed(2)
 			this.columnTotals[i][columnRef] = '$' + total;
 		},
 		formNewRow: function(){
@@ -70,7 +74,8 @@ app.controller("tableCtrl", function($scope, tableService){
 						this.val=''
 					}
 					if(this.val !== this.valRef && this.val !== ''){
-							//using "this.equations" didn't go to the parent prototype- how do I do that? also, because I'm not using a constructor this is creating this function again and again
+							//using "this.equations" didn't go to the parent prototype- how do I do that? 
+							//also, because I'm not using a constructor this is creating this function again and again
 							//I think this would need to be a constructor to share the parent prototype? Need to research
 							
 							newVal = $scope.table.multiply(this.val, this.index);
@@ -88,10 +93,10 @@ app.controller("tableCtrl", function($scope, tableService){
 				total: function(oldVal, newVal){
 					if(this.val === '$0.00'){
 						this.val = '0'
-					} else if (this.val){
-						console.log(this.val, '1')
+					} else if (typeof this.val === "string"){
+						
 						this.val = this.val.replace('$','')
-						console.log(this.val, '2')
+						
 					}
 					this.val = parseFloat(this.val)
 					this.val -= oldVal;
@@ -102,7 +107,7 @@ app.controller("tableCtrl", function($scope, tableService){
 
 				},
 				setTotal: function(){
-					this.val = '$' + this.val.toString()
+					this.val = '$' + parseFloat(this.val).toFixed(2)
 				}
 			})
 			this.rows.push(row)

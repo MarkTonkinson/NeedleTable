@@ -1,0 +1,13 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+header {
+	text-align: center;
+}
+
+table, th, td {
+	border: 1px solid black;
+	margin-right: auto;
+	margin-left: auto;
+}
