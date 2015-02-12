@@ -18,7 +18,7 @@
 	</tr>
 	<tr ng-repeat="row in table.rows track by $index">
 		<td ng-repeat="(key, val) in table.rows[$index]">
-			<input type="text" ng-model="val.val" ng-focus="val.focus()" ng-change="val.equation(row)" ng-blur="val.blur(row)">
+			<input type="text" ng-model="val.val" ng-focus="val.focus()" ng-change="val.equation(row)" ng-blur="val.blur(row)" ng-readonly="val.readOnly()">
 		</td>
 	</tr>
 	<tr>

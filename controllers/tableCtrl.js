@@ -54,6 +54,9 @@ app.controller("tableCtrl", function($scope, tableService){
 					index: i + 1,
 					val: '0',
 					valRef: '0',
+					readOnly: function(){
+						return false
+					},
 					focus: function(){
 						if(this.val === '0'){
 							this.val = '';
@@ -108,6 +111,9 @@ app.controller("tableCtrl", function($scope, tableService){
 				},
 				setTotal: function(){
 					this.val = '$' + parseFloat(this.val).toFixed(2)
+				},
+				readOnly: function(){
+					return true
 				}
 			})
 			this.rows.push(row)
